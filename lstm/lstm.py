@@ -92,11 +92,12 @@ for epoch in range(epoch_num):
         optim.zero_grad()
         x = x.to(device)
         y = y.to(device)
-        output, h_out, c_out = Net(x, h_0, c_0)
+        output, h_0, c_0 = Net(x, h_0, c_0)
         loss = criterion(output.view(-1,V), y.view(-1))
         loss.backward()
         optim.step()
         total_loss += loss
-    print(epoch,total_loss.item())
+    print(epoch,total_loss.item()/len(dl))
+
 
 
