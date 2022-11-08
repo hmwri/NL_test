@@ -2,8 +2,8 @@ import torch
 
 class Trainer:
     def __init__(self,model, criterion,optimizer,device=None):
-        if device is None:
-            device = "cpu"
+        if device is "cpu":
+            pass
         elif torch.backends.mps.is_available():
             device = "mps"
         elif torch.cuda.is_available():
