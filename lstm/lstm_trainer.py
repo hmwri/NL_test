@@ -20,9 +20,10 @@ class LstmTrainer(Trainer):
             with torch.no_grad():
                 self.model.eval()
                 for x, t in data_loader_eval:
-                    output, (c_0, h_0) = self.model(x, (h_0, c_0))
                     x.to(self.device)
                     t.to(self.device)
+                    output, (c_0, h_0) = self.model(x, (h_0, c_0))
+
                     loss = self.criterion(output.view(-1, self.V), t.view(-1))
                     loss_sum += loss.item()
                 ppl = np.exp(loss_sum / len(data_loader))
