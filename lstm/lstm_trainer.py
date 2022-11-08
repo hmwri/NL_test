@@ -20,8 +20,8 @@ class LstmTrainer(Trainer):
             with torch.no_grad():
                 self.model.eval()
                 for x, t in data_loader_eval:
-                    x.to(self.device)
-                    t.to(self.device)
+                    x = x.to(self.device)
+                    t = t.to(self.device)
                     output, h_0, c_0 = self.model(x, h_0, c_0)
 
                     loss = self.criterion(output.view(-1, self.V), t.view(-1))
