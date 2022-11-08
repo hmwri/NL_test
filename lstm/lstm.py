@@ -101,9 +101,9 @@ for epoch in range(epoch_num):
         loss.backward()
         optim.step()
         total_loss += loss.item()
-        if count_loss % 100 == 0 :
+        if count_loss % 100 == 0 and count_loss != 0:
             ppl = np.exp(total_loss / count_loss)
-            print(f"{epoch}:ppl={ppl}")
+            print(f"{epoch},{count_loss}:ppl={ppl}")
             total_loss = 0
             count_loss = 0
 
