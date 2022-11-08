@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import torch
 
 from read_file import *
@@ -39,7 +40,7 @@ with open('corpus.pkl', 'rb') as f:
 print(corpus)
 
 time_step = 10
-ds = LSTM_Dataset(corpus, time_step)
+ds = LSTM_Dataset(corpus, time_step,train=True)
 
 print(len(ds))
 N = 100
@@ -98,8 +99,10 @@ for epoch in range(epoch_num):
         loss = criterion(output.view(-1,V), y.view(-1))
         loss.backward()
         optim.step()
-        total_loss += loss
-    print(epoch,total_loss.item()/len(dl))
+        total_loss += loss.item()
+    ppl = np.exp(total_loss/len(dl))
+    print(f"{epoch}:ppl={ppl}")
+    Net.eval()
 
 
 

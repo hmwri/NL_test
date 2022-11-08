@@ -3,7 +3,11 @@ import torch
 
 
 class LSTM_Dataset(Dataset):
-    def __init__(self, corpus, time_step):
+    def __init__(self, corpus, time_step,train=True,split_rate=0.9):
+        if train:
+            corpus = corpus[:int(len(corpus) * split_rate)]
+        else:
+            corpus = corpus[int(len(corpus) * split_rate):]
         self.x = torch.tensor(corpus[:-1],dtype=torch.long)
         self.y = torch.tensor(corpus[1:],dtype=torch.long)
         self.time_step = time_step
