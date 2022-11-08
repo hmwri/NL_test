@@ -74,7 +74,12 @@ loss.backward()
 # img.format = "png"
 # img.render("NeuralNet")
 
-device = torch.device("mps")
+device = "cpu"
+if torch.backends.mps.is_available() :
+    device = "mps"
+elif torch.cuda.is_available():
+    device = "cuda:0"
+device = torch.device(device)
 Net = Net.to(device)
 optim = torch.optim.Adam(Net.parameters())
 
