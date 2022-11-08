@@ -13,7 +13,7 @@ class LstmTrainer(Trainer):
     def fit(self,epoch_num,data_loader,data_loader_eval):
         self.N = data_loader.batch_size
 
-        def eval_proxity(self):
+        def eval_proxity():
             loss_sum = 0
             h_0 = torch.zeros(1, self.N, self.H, dtype=torch.float).to(self.device)
             c_0 = torch.zeros(1, self.N, self.H, dtype=torch.float).to(self.device)
