@@ -22,7 +22,7 @@ class LstmTrainer(Trainer):
                 for x, t in data_loader_eval:
                     output, (c_0, h_0) = self.model(x, (h_0, c_0))
                     x.to(self.device)
-                    y.to(self.device)
+                    t.to(self.device)
                     loss = self.criterion(output.view(-1, self.V), t.view(-1))
                     loss_sum += loss.item()
                 ppl = np.exp(loss_sum / len(data_loader))
