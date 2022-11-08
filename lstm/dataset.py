@@ -33,6 +33,7 @@ class LSTM_DataLoader(object):
 
     def __next__(self):
         if self.index == self.length:
+            self.index = 0
             raise StopIteration()
         xset = torch.zeros(self.batch_size,self.dataset.time_step,dtype=torch.long)
         yset = torch.zeros(self.batch_size, self.dataset.time_step,dtype=torch.long)

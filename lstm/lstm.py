@@ -97,8 +97,6 @@ for epoch in range(epoch_num):
         loss.backward()
         optim.step()
         total_loss += loss
-    print(total_loss)
-
-    total_loss = 0
+    print(epoch,total_loss.item())
 
 
