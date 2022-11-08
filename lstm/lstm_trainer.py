@@ -26,7 +26,7 @@ class LstmTrainer(Trainer):
 
                     loss = self.criterion(output.view(-1, self.V), t.view(-1))
                     loss_sum += loss.item()
-                ppl = np.exp(loss_sum / len(data_loader))
+                ppl = np.exp(loss_sum / len(data_loader_eval))
                 return ppl
 
         for epoch in range(epoch_num):
