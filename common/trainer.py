@@ -1,8 +1,10 @@
 import torch
 
 class Trainer:
-    def __init__(self,model, criterion,optimizer,device="cpu"):
-        if torch.backends.mps.is_available():
+    def __init__(self,model, criterion,optimizer,device=None):
+        if device is None:
+            device = "cpu"
+        elif torch.backends.mps.is_available():
             device = "mps"
         elif torch.cuda.is_available():
             device = "cuda:0"
@@ -16,7 +18,7 @@ class Trainer:
 
     def add_loss(self,loss):
         self.loss += loss
-        self.loss_count += 0
+        self.loss_count += 1
 
     def get_avg_loss(self):
         avg =  self.loss / self.loss_count

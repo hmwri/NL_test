@@ -1,5 +1,6 @@
 import os
-
+import sys
+sys.path.append('..')
 import numpy as np
 import torch
 
@@ -9,6 +10,7 @@ from dataset import LSTM_Dataset, LSTM_DataLoader
 import pickle
 import net
 import torch.nn as nn
+from lstm_trainer import LstmTrainer
 
 def load_corpus(reload = False):
     if reload:
@@ -36,6 +38,7 @@ def load_corpus(reload = False):
     return corpus, word_to_id, id_to_word
 
 
+
 corpus, word_to_id, id_to_word = load_corpus()
 print(len(word_to_id))
 
@@ -46,7 +49,7 @@ ds_v = LSTM_Dataset(corpus, time_step,train=False)
 print(len(ds))
 N = 100
 dl = LSTM_DataLoader(ds, batch_size=N)
-dl = LSTM_DataLoader(ds_v, batch_size=N)
+dl_eval = LSTM_DataLoader(ds_v, batch_size=N)
 # i = 0
 # for x, y in tqdm(dl):
 #     if i == dl.length - 1:
@@ -77,42 +80,9 @@ loss.backward()
 # img.format = "png"
 # img.render("NeuralNet")
 
-device = "cpu"
-if torch.backends.mps.is_available() :
-    device = "mps"
-elif torch.cuda.is_available():
-    device = "cuda:0"
-device = torch.device(device)
-Net = Net.to(device)
 optim = torch.optim.Adam(Net.parameters())
+trainer = LstmTrainer(Net,criterion,optim)
 
-for epoch in range(epoch_num):
-    h_0 = torch.zeros(1, N, H,dtype=torch.float).to(device)
-    c_0 = torch.zeros(1, N, H, dtype=torch.float).to(device)
-    total_loss = 0
-    count_loss = 0
-    Net.train()
-    for x,y in tqdm(dl):
-        optim.zero_grad()
-        x = x.to(device)
-        y = y.to(device)
-        output, h_0, c_0 = Net(x, h_0, c_0)
-        h_0 = h_0.detach()
-        c_0 = c_0.detach()
-        loss = criterion(output.view(-1,V), y.view(-1))
-        loss.backward()
-        optim.step()
-        total_loss += loss.item()
-        count_loss += 1
-        if count_loss % 100 == 0:
-            ppl = np.exp(total_loss / count_loss)
-            print(f"{epoch},{count_loss}:ppl={ppl}")
-            total_loss = 0
-            count_loss = 0
-
-    Net.eval()
-
-
-
+trainer.fit(100,dl,dl_eval)
 
 
