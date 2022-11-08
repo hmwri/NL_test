@@ -6,39 +6,39 @@ import torch
 from read_file import *
 from preprocess import *
 from dataset import LSTM_Dataset, LSTM_DataLoader
-from torch.utils.data import DataLoader
-from torchviz import make_dot
 import pickle
 import net
 import torch.nn as nn
-from IPython.display import display
 
-reload_copus = False
-if reload_copus:
-    texts = read_corpus_file("../text")
-    texts = preprocess(texts)
-    print(f"read : {texts}")
-    corpus, word_to_id, id_to_word = make_corpus(texts)
-    print(corpus)
-
-
-    with open('corpus.pkl', 'wb') as f:
-        pickle.dump({
-            "corpus":corpus,
-            "word_to_id":word_to_id,
-            "id_to_word":id_to_word,
-        }, f)
+def load_corpus(reload = False):
+    if reload:
+        texts = read_corpus_file("../text")
+        texts = preprocess(texts)
+        print(f"read : {texts}")
+        corpus, word_to_id, id_to_word = make_corpus(texts)
+        print(corpus)
 
 
-with open('corpus.pkl', 'rb') as f:
-    data = pickle.load(f)
-    corpus = data["corpus"]
-    word_to_id = data["word_to_id"]
-    id_to_word = data["id_to_word"]
+        with open('corpus.pkl', 'wb') as f:
+            pickle.dump({
+                "corpus":corpus,
+                "word_to_id":word_to_id,
+                "id_to_word":id_to_word,
+            }, f)
 
 
-print(corpus)
+    with open('corpus.pkl', 'rb') as f:
+        data = pickle.load(f)
+        corpus = data["corpus"]
+        word_to_id = data["word_to_id"]
+        id_to_word = data["id_to_word"]
 
+    return corpus, word_to_id, id_to_word
+
+
+corpus, word_to_id, id_to_word = load_corpus()
+print(len(word_to_id))
+exit()
 time_step = 10
 ds = LSTM_Dataset(corpus, time_step,train=True)
 
@@ -88,6 +88,7 @@ for epoch in range(epoch_num):
     h_0 = torch.zeros(1, N, H,dtype=torch.float).to(device)
     c_0 = torch.zeros(1, N, H, dtype=torch.float).to(device)
     total_loss = 0
+    count_loss = 0
     Net.train()
     for x,y in tqdm(dl):
         optim.zero_grad()
@@ -100,8 +101,12 @@ for epoch in range(epoch_num):
         loss.backward()
         optim.step()
         total_loss += loss.item()
-    ppl = np.exp(total_loss/len(dl))
-    print(f"{epoch}:ppl={ppl}")
+        if count_loss % 100 == 0 :
+            ppl = np.exp(total_loss / count_loss)
+            print(f"{epoch}:ppl={ppl}")
+            total_loss = 0
+            count_loss = 0
+
     Net.eval()
 
 
