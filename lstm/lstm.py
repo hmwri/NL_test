@@ -41,10 +41,12 @@ print(len(word_to_id))
 
 time_step = 10
 ds = LSTM_Dataset(corpus, time_step,train=True)
+ds_v = LSTM_Dataset(corpus, time_step,train=False)
 
 print(len(ds))
 N = 100
 dl = LSTM_DataLoader(ds, batch_size=N)
+dl = LSTM_DataLoader(ds_v, batch_size=N)
 # i = 0
 # for x, y in tqdm(dl):
 #     if i == dl.length - 1:
@@ -109,6 +111,8 @@ for epoch in range(epoch_num):
             count_loss = 0
 
     Net.eval()
+
+
 
 
 
