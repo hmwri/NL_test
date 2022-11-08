@@ -12,16 +12,20 @@ import net
 import torch.nn as nn
 from lstm_trainer import LstmTrainer
 
-def load_corpus(reload = False):
+def load_corpus(reload = False, short=False):
+    filename = "short_corpus" if short else "corpus"
     if reload:
-        texts = read_corpus_file("../text")
+        if short:
+            texts = read_corpus_file("../text",n=100)
+        else:
+            texts = read_corpus_file("../text")
         texts = preprocess(texts)
         print(f"read : {texts}")
         corpus, word_to_id, id_to_word = make_corpus(texts)
         print(corpus)
 
 
-        with open('corpus.pkl', 'wb') as f:
+        with open(f'{filename}.pkl', 'wb') as f:
             pickle.dump({
                 "corpus":corpus,
                 "word_to_id":word_to_id,
@@ -29,7 +33,7 @@ def load_corpus(reload = False):
             }, f)
 
 
-    with open('corpus.pkl', 'rb') as f:
+    with open(f'{filename}.pkl', 'rb') as f:
         data = pickle.load(f)
         corpus = data["corpus"]
         word_to_id = data["word_to_id"]
@@ -39,10 +43,10 @@ def load_corpus(reload = False):
 
 
 
-corpus, word_to_id, id_to_word = load_corpus()
+corpus, word_to_id, id_to_word = load_corpus(reload=False,short=False)
 print(len(word_to_id))
 
-time_step = 10
+time_step = 20
 ds = LSTM_Dataset(corpus, time_step,train=True)
 ds_v = LSTM_Dataset(corpus, time_step,train=False)
 
@@ -83,6 +87,6 @@ loss.backward()
 optim = torch.optim.Adam(Net.parameters())
 trainer = LstmTrainer(Net,criterion,optim)
 
-trainer.fit(100,dl,dl_eval)
+trainer.fit(epoch_num,dl,dl_eval)
 
 
