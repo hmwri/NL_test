@@ -68,7 +68,7 @@ dl_eval = LSTM_DataLoader(ds_v, batch_size=N)
 n_embed = 100
 H = 100
 V = len(word_to_id)
-epoch_num = 15
+epoch_num = 50
 
 Net = net.LSTM_NET_3(n_embed,H,V)
 # for x, y in tqdm(dl):
