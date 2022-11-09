@@ -170,3 +170,4 @@ class LstmTrainer2(Trainer):
             pickle.dump(self.info, f)
 
 
+

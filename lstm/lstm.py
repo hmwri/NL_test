@@ -70,7 +70,7 @@ H = 100
 V = len(word_to_id)
 epoch_num = 50
 
-Net = net.LSTM_NET(n_embed,H,V)
+Net = net.LSTM_NET_3(n_embed,H,V)
 # for x, y in tqdm(dl):
 #     break
 criterion = nn.CrossEntropyLoss()
@@ -88,8 +88,9 @@ criterion = nn.CrossEntropyLoss()
 # img.render("NeuralNet")
 
 optim = torch.optim.Adam(Net.parameters())
-trainer = LstmTrainer(Net,criterion,optim,name="lstm_trainer_1layer_notadvanced")
+trainer = LstmTrainer2(Net,criterion,optim,name="lstm_trainer_2layer_advanced")
 
 trainer.fit(epoch_num,dl,dl_eval)
-
+model_path = 'model.pth'
+torch.save(Net.state_dict(), model_path)
 
