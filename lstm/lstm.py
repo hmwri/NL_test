@@ -46,7 +46,7 @@ def load_corpus(reload = False, short=False):
 corpus, word_to_id, id_to_word = load_corpus(reload=False,short=False)
 print(len(word_to_id))
 
-time_step = 20
+time_step = 10
 ds = LSTM_Dataset(corpus, time_step,train=True)
 ds_v = LSTM_Dataset(corpus, time_step,train=False)
 test_ds = LSTM_Dataset(list(range(20)), 3 ,train=True)
