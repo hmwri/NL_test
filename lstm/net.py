@@ -7,7 +7,7 @@ class LSTM_NET(nn.Module):
         self.n_hidden = n_hidden
         self.n_vocab = n_vocab
         self.embedding = nn.Embedding(n_vocab, n_embed)
-        self.lstm = nn.LSTM(n_embed, n_hidden, batch_first=False)
+        self.lstm = nn.LSTM(n_embed, n_hidden, batch_first=True)
         self.l1 = nn.Linear(n_hidden, n_vocab)
 
     def forward(self, target, h_0=0, c_0=0):
@@ -24,8 +24,8 @@ class LSTM_NET_2(nn.Module):
         self.n_hidden = n_hidden
         self.n_vocab = n_vocab
         self.embedding = nn.Embedding(n_vocab, n_embed)
-        self.lstm1 = nn.LSTM(n_embed, n_hidden, batch_first=False)
-        self.lstm2 = nn.LSTM(n_embed, n_hidden, batch_first=False)
+        self.lstm1 = nn.LSTM(n_embed, n_hidden, batch_first=True)
+        self.lstm2 = nn.LSTM(n_embed, n_hidden, batch_first=True)
         self.l1 = nn.Linear(n_hidden, n_vocab)
 
     def forward(self, target, hidden1, hidden2):

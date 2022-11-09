@@ -43,13 +43,11 @@ class LSTM_DataLoader(object):
             self.index = 0
             raise StopIteration()
         T = self.dataset.time_step
-        xset = torch.zeros(T, self.batch_size, dtype=torch.long)
-        yset = torch.zeros(T, self.batch_size,dtype=torch.long)
-        jump = math.ceil(len(self.dataset.x) / (T * self.batch_size)) * T
-        for t in range(T):
-            x = self.dataset.x[self.index*T+t::jump]
-            y = self.dataset.y[self.index*T+t::jump]
-            xset[t] = x
-            yset[t] = y
+        xset = torch.zeros(self.batch_size, T, dtype=torch.long)
+        yset = torch.zeros(self.batch_size, T, dtype=torch.long)
+        for i in range(self.batch_size):
+            x, y = self.dataset[self.index + i * self.length]
+            xset[i] = x
+            yset[i] = y
         self.index += 1
         return xset,yset
