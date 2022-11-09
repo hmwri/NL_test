@@ -65,8 +65,8 @@ dl_eval = LSTM_DataLoader(ds_v, batch_size=N)
 #             print(to_word(yy, id_to_word))
 #     i+=1
 
-n_embed = 10
-H = 10
+n_embed = 100
+H = 100
 V = len(word_to_id)
 epoch_num = 15
 
