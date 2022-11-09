@@ -1,6 +1,7 @@
+import numpy as np
 from torch.utils.data import Dataset
 import torch
-
+import math
 
 class LSTM_Dataset(Dataset):
     def __init__(self, corpus, time_step,train=True,split_rate=0.9):
@@ -10,6 +11,7 @@ class LSTM_Dataset(Dataset):
             corpus = corpus[int(len(corpus) * split_rate):]
         self.x = torch.tensor(corpus[:-1],dtype=torch.long)
         self.y = torch.tensor(corpus[1:],dtype=torch.long)
+
         self.time_step = time_step
 
     def __len__(self):
@@ -22,8 +24,9 @@ class LSTM_Dataset(Dataset):
 
 
 
+
 class LSTM_DataLoader(object):
-    def __init__(self,dataset,batch_size=10):
+    def __init__(self,dataset,batch_size=10,batch_first=False):
         self.dataset = dataset
         self.batch_size = batch_size
         self.index = 0
@@ -39,12 +42,14 @@ class LSTM_DataLoader(object):
         if self.index == self.length:
             self.index = 0
             raise StopIteration()
-        xset = torch.zeros(self.dataset.time_step, self.batch_size, dtype=torch.long)
-        yset = torch.zeros(self.dataset.time_step, self.batch_size,dtype=torch.long)
-        for i in range(self.batch_size):
-            x,y = self.dataset[self.index+i*self.length]
-            for t, (xt, yt) in enumerate(zip(x,y)):
-                xset[t][i] = xt
-                yset[t][i] = yt
+        T = self.dataset.time_step
+        xset = torch.zeros(T, self.batch_size, dtype=torch.long)
+        yset = torch.zeros(T, self.batch_size,dtype=torch.long)
+        jump = math.ceil(len(self.dataset) / self.batch_size) * T
+        for t in range(T):
+            x = self.dataset.x[self.index*T+t::jump]
+            y = self.dataset.y[self.index*T+t::jump]
+            xset[t] = x
+            yset[t] = y
         self.index += 1
         return xset,yset

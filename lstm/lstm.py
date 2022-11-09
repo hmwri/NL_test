@@ -49,7 +49,10 @@ print(len(word_to_id))
 time_step = 20
 ds = LSTM_Dataset(corpus, time_step,train=True)
 ds_v = LSTM_Dataset(corpus, time_step,train=False)
-
+test_ds = LSTM_Dataset(list(range(20)), 3 ,train=True)
+test_dl = LSTM_DataLoader(test_ds,batch_size=3)
+for x, i in test_dl:
+    print(x)
 print(len(ds))
 N = 100
 dl = LSTM_DataLoader(ds, batch_size=N)
