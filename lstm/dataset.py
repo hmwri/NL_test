@@ -45,7 +45,7 @@ class LSTM_DataLoader(object):
         T = self.dataset.time_step
         xset = torch.zeros(T, self.batch_size, dtype=torch.long)
         yset = torch.zeros(T, self.batch_size,dtype=torch.long)
-        jump = math.ceil(len(self.dataset) / self.batch_size) * T
+        jump = math.ceil(len(self.dataset.x) / (T * self.batch_size)) * T
         for t in range(T):
             x = self.dataset.x[self.index*T+t::jump]
             y = self.dataset.y[self.index*T+t::jump]
