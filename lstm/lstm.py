@@ -88,7 +88,7 @@ criterion = nn.CrossEntropyLoss()
 # img.render("NeuralNet")
 
 optim = torch.optim.Adam(Net.parameters())
-trainer = LstmTrainer2(Net,criterion,optim,name="lstm_trainer_2layer")
+trainer = LstmTrainer2(Net,criterion,optim,name="lstm_trainer_2layer_h100")
 
 trainer.fit(epoch_num,dl,dl_eval)
 
