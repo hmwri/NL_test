@@ -6,18 +6,17 @@ from tqdm import tqdm
 
 
 
-def preprocess(texts,unk=4):
+def preprocess(texts,unk=4,predict=False):
     indexes = {}
     tagger = MeCab.Tagger("-Owakati")
+    if predict:
+        text = removeSymbols(texts)
+        return tagger.parse(text).split()
 
     ntexts = []
     i = 0
     for text in tqdm(texts):
-        text = re.sub(r"https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+", " ", text)
-        text = re.sub(r"[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+\+[0-9]+", " ", text)
-        text = re.sub(
-            r"[_－―─＠＃＄％＾＆\-‐|\\＊\“（）＿■×+α※÷⇒—●★☆〇◎◆▼◇△□(：〜～＋=)／*&^%$#@!~`){}［］…\[\]\"\'\”\’:;<>?＜＞〔〕〈〉？、。・,/『』【】「」→←○《》≪≫\n\u3000]+",
-            " ", text)
+        text = removeSymbols(text)
         node = tagger.parseToNode(text)
         while node:
             text = node.surface
@@ -34,6 +33,14 @@ def preprocess(texts,unk=4):
     replaceUnk(ntexts, indexes,unk)
     return ntexts
 
+
+def removeSymbols(text):
+    text = re.sub(r"https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+", " ", text)
+    text = re.sub(r"[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+\+[0-9]+", " ", text)
+    text = re.sub(
+        r"[_－―─＠＃＄％＾＆\-‐|\\＊\“（）＿■×+α※÷⇒—●★☆〇◎◆▼◇△□(：〜～＋=)／*&^%$#@!~`){}［］…\[\]\"\'\”\’:;<>?＜＞〔〕〈〉？・,/『』【】「」→←○《》≪≫\n\u3000]+",
+        " ", text)
+    return text
 
 def replaceUnk(texts, indexes,unk):
     counter = Counter(texts)
